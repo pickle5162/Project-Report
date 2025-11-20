@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Future Imperfect by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Menu -->
+					<section id="menu">
+						<!-- Search -->
+							<section>
+								<form class="search" method="get" action="#">
+									<input type="text" name="query" placeholder="Search" />
+								</form>
+							</section>
+						<!-- Actions -->
+							<section>
+								<ul class="actions stacked">
+									<li><a href="#" class="button large fit">Log In</a></li>
+								</ul>
+							</section>
+					</section>
+				<div id="main">
+    			</div>
+				<!-- Sidebar -->
+					<section id="sidebar">
+						<!-- Intro -->
+							<section id="intro">
+								<a href="#" class="logo"><img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="" /></a>
+								<header>
+									<h2>部落格</h2>
+									<button id="addPostButton">新增一篇範例文章</button>
+								</header>
+							</section>
+						<!-- Mini Posts -->
+							<section>
+								<div class="mini-posts">
+									<!-- Mini Post -->
+										<article class="mini-post">
+											<header>
+												<h3><a href="{{ url_for('single') }}">#Food</a></h3>
+												<a href="#" class="author"></a>
+											</header>
+											<a href="{{ url_for('single') }}" class="image"><img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" /></a>
+										</article>
+									<!-- Mini Post -->
+										<article class="mini-post">
+											<header>
+												<h3><a href="{{ url_for('single') }}">#Sports</a></h3>
+												<a href="#" class="author"></a>
+											</header>
+											<a href="{{ url_for('single') }}" class="image"><img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" /></a>
+										</article>
+									<!-- Mini Post -->
+										<article class="mini-post">
+											<header>
+												<h3><a href="{{ url_for('single') }}">#Technology</a></h3>
+												<a href="#" class="author"></a>
+											</header>
+											<a href="{{ url_for('single') }}" class="image"><img src="{{ url_for('static', filename='images/pic06.jpg') }}" alt="" /></a>
+										</article>
+									<!-- Mini Post -->
+										<article class="mini-post">
+											<header>
+												<h3><a href="{{ url_for('single') }}">#Other</a></h3>
+												<a href="#" class="author"></a>
+											</header>
+											<a href="{{ url_for('single') }}" class="image"><img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="" /></a>
+										</article>
+								</div>
+							</section>
+					</section>
+			</div>
+		<!-- Scripts -->
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>
