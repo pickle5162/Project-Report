@@ -12,6 +12,20 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 	</head>
 	<body class="single is-preload">
+		<div id="main">
+    {% if article %}
+        <article class="post">
+            <header>
+                <div class="title">
+                    <h2>{{ article[0] }}</h2> <p>作者: {{ article[2] }} | 時間: {{ article[3] }}</p>
+                </div>
+            </header>
+            <p>{{ article[1] | safe }}</p> 
+        </article>
+    {% else %}
+        <p>文章讀取錯誤。</p>
+    {% endif %}
+</div>
 
 		<!-- Wrapper -->
 			<div id="wrapper">
