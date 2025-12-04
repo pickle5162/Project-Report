@@ -13,49 +13,30 @@
 	</head>
 	<body class="single is-preload">
 		<div id="main">
-    {% if article %}
-        <article class="post">
-            <header>
-                <div class="title">
-                    <h2>{{ article[0] }}</h2> <p>作者: {{ article[2] }} | 時間: {{ article[3] }}</p>
-                </div>
-            </header>
-            <p>{{ article[1] | safe }}</p> 
-        </article>
-    {% else %}
-        <p>文章讀取錯誤。</p>
-    {% endif %}
-</div>
+        	<h2>分類: {{ category }}</h2>
+
+        	{% if articles %}
+            	{% for article in articles %}
+                <article class="post">
+                    <header>
+                        <div class="title">
+                            <h2>{{ article[0] }}</h2> 
+                            <p>作者: {{ article[2] }} | 時間: {{ article[3] }}</p>
+                        </div>
+                    </header>
+                    <p>{{ article[1] | safe }}</p> 
+                </article>
+            {% endfor %}
+        	{% else %}
+            	<p>此分類下目前沒有文章。</p>
+        	{% endif %}
+    	</div>
 
 		<!-- Wrapper -->
 			<div id="wrapper">
 
 				<!-- Header -->
-					<header id="header">
-						<h1><a href="index.html">Future Imperfect</a></h1>
-						<nav class="links">
-							<ul>
-								<li><a href="#">Lorem</a></li>
-								<li><a href="#">Ipsum</a></li>
-								<li><a href="#">Feugiat</a></li>
-								<li><a href="#">Tempus</a></li>
-								<li><a href="#">Adipiscing</a></li>
-							</ul>
-						</nav>
-						<nav class="main">
-							<ul>
-								<li class="search">
-									<a class="fa-search" href="#search">Search</a>
-									<form id="search" method="get" action="#">
-										<input type="text" name="query" placeholder="Search" />
-									</form>
-								</li>
-								<li class="menu">
-									<a class="fa-bars" href="#menu">Menu</a>
-								</li>
-							</ul>
-						</nav>
-					</header>
+					
 
 				<!-- Menu -->
 					<section id="menu">
@@ -67,35 +48,7 @@
 								</form>
 							</section>
 
-						<!-- Links -->
-							<section>
-								<ul class="links">
-									<li>
-										<a href="#">
-											<h3>Lorem ipsum</h3>
-											<p>Feugiat tempus veroeros dolor</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<h3>Dolor sit amet</h3>
-											<p>Sed vitae justo condimentum</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<h3>Feugiat veroeros</h3>
-											<p>Phasellus sed ultricies mi congue</p>
-										</a>
-									</li>
-									<li>
-										<a href="#">
-											<h3>Etiam sed consequat</h3>
-											<p>Porta lectus amet ultricies</p>
-										</a>
-									</li>
-								</ul>
-							</section>
+					
 
 						<!-- Actions -->
 							<section>
