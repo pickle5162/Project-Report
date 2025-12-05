@@ -9,22 +9,32 @@
 	<body class="is-preload">
 		<!-- Wrapper -->
 			<div id="wrapper">
-				<!-- Menu -->
-					<section id="menu">
-						<!-- Search -->
-							<section>
-								<form class="search" method="get" action="#">
-									<input type="text" name="query" placeholder="Search" />
-								</form>
-							</section>
-						<!-- Actions -->
-							<section>
-								<ul class="actions stacked">
-									<li><a href="#" class="button large fit">Log In</a></li>
-								</ul>
-							</section>
-					</section>
 				<div id="main">
+        			{% if articles %}
+   					{% for article in articles %}
+        			<article class="post">
+            			<header>
+                			<div class="title">
+                    			<h2>{{ article[0] }}</h2>
+                			</div>
+                			<div class="meta">
+                    			<time class="published" datetime="{{ article[3] }}">{{ article[3] }}</time>
+                    			<a href="{{ url_for('author_posts', author_name=article[2]) }}" class="author"><span class="name">{{ article[2] }}</span></a>
+                			</div>
+            			</header>
+            				<p>{{ article[1] | safe }}</p>
+            			<footer>
+							<ul class="stats">
+								<li>{{ article[4] }}</li>
+								<li><a href="#" class="icon solid fa-heart">28</a></li>
+								<li><a href="#" class="icon solid fa-comment">128</a></li>
+							</ul>
+            			</footer>
+        			</article>
+    				{% endfor %}
+					{% else %}
+    				<p>此分類下目前沒有文章。</p>
+					{% endif %}
     			</div>
 				<!-- Sidebar -->
 					<section id="sidebar">

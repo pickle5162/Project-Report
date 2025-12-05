@@ -1784,10 +1784,10 @@ input, select, textarea {
 		-webkit-align-items: center;
 		-ms-align-items: center;
 		align-items: center;
-		-moz-justify-content: -moz-flex-end;
-		-webkit-justify-content: -webkit-flex-end;
-		-ms-justify-content: -ms-flex-end;
-		justify-content: flex-end;
+		-moz-justify-content: center;
+		-webkit-justify-content: center;
+		-ms-justify-content: center;
+		justify-content: center;	
 		border-bottom: 0;
 		font-family: "Raleway", Helvetica, sans-serif;
 		font-size: 0.6em;
@@ -2760,7 +2760,7 @@ input, select, textarea {
 					white-space: nowrap;
 				}
 
-		.post > a.image.featured {
+		.post > a.image.featured {	
 			overflow: hidden;
 		}
 
