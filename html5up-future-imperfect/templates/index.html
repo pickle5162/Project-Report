@@ -7,6 +7,31 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 	</head>
 	<body class="is-preload">
+		<div id="postModal" style="display: none;">
+    		<div>
+        		<span id="closeModalBtn">&times;</span>
+        		<h2>撰寫新文章</h2>
+        		<form id="newPostForm">
+            		<label for="postTitle">標題:</label>
+            		<input type="text" id="postTitle" name="title" required><br><br>
+
+            		<label for="postContent">內容:</label>
+            		<textarea id="postContent" name="content" rows="10" required></textarea><br><br>
+
+            		<label for="postCategory">種類:</label>
+           	 		<select id="postCategory" name="category" required>
+						<option value="Food">Food</option>
+                		<option value="Sports">Sports</option>
+                		<option value="Technology">Technology</option>
+                		<option value="Other">Other</option>
+           			</select><br><br>
+
+            		<button type="submit">發佈文章</button>
+        		</form>
+    		</div>
+		</div>
+
+
 		<!-- Wrapper -->
 			<div id="wrapper">
 				<div id="main">
@@ -15,18 +40,17 @@
         			<article class="post">
             			<header>
                 			<div class="title">
-                    			<h2>{{ article[0] }}</h2>
+                    			<h2 class="article-content">{{ article[0] }}</h2>
                 			</div>
                 			<div class="meta">
                     			<time class="published" datetime="{{ article[3] }}">{{ article[3] }}</time>
                     			<a href="{{ url_for('author_posts', author_name=article[2]) }}" class="author"><span class="name">{{ article[2] }}</span></a>
                 			</div>
             			</header>
-            				<p>{{ article[1] | safe }}</p>
+            				<p class="article-content">{{ article[1] | safe }}</p>
             			<footer>
 							<ul class="stats">
 								<li>{{ article[4] }}</li>
-								<li><a href="#" class="icon solid fa-heart">28</a></li>
 								<li><a href="#" class="icon solid fa-comment">128</a></li>
 							</ul>
             			</footer>
@@ -40,10 +64,10 @@
 					<section id="sidebar">
 						<!-- Intro -->
 							<section id="intro">
-								<a href="#" class="logo"><img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="" /></a>
+								<a href="/login" class="logo"><img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="" /></a>
 								<header>
-									<h2>部落格</h2>
-									<button id="addPostButton">新增一篇範例文章</button>
+									<a href="/login"><h2>登入/註冊</h2></a>
+									<button id="addPostButton">新增文章</button>
 								</header>
 							</section>
 						<!-- Mini Posts -->
@@ -86,6 +110,6 @@
 					</section>
 			</div>
 		<!-- Scripts -->
-			<script src="assets/js/main.js"></script>
+			<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>	
 	</body>
 </html>
