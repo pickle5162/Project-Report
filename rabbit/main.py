@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 app = Flask(__name__)
+app.permanent_session_lifetime = timedelta(hours=2)
 app.secret_key = 'This_Is_My_Final_Project_Its_Called_Rabbit'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "data.db")
@@ -10,7 +11,7 @@ DB_PATH = os.path.join(BASE_DIR, "data.db")
 def get_all_articles():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'SELECT title, content, author, time, category FROM data ORDER BY time DESC'
+    query = 'SELECT id, title, content, author, time, category FROM data ORDER BY time DESC'
     cursor.execute(query)
     articles = cursor.fetchall()
     conn.close()
@@ -19,7 +20,7 @@ def get_all_articles():
 def get_articles_by_category(category_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'SELECT title, content, author, time, category FROM data WHERE category = ? ORDER BY time DESC'
+    query = 'SELECT id, title, content, author, time, category FROM data ORDER BY time DESC'
     cursor.execute(query, (category_name,))
     articles = cursor.fetchall()
     conn.close()
@@ -28,12 +29,21 @@ def get_articles_by_category(category_name):
 def get_articles_by_author(author_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'SELECT title, content, author, time, category FROM data WHERE author = ? ORDER BY time DESC'
+    query = 'SELECT id, title, content, author, time, category FROM data ORDER BY time DESC'
     cursor.execute(query, (author_name,))
     articles = cursor.fetchall()
     conn.close()
     return articles
 
+def get_article_by_id(article_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    query = 'SELECT id, title, content, author, time, category FROM data WHERE id = ?'
+    cursor.execute(query, (article_id,))
+    article = cursor.fetchone() 
+    conn.close()    
+    return article
+        
 def insert_article(title, content, author, category):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -45,7 +55,6 @@ def insert_article(title, content, author, category):
         conn.commit()
         return True
     except sqlite3.Error as e:
-        print(f"資料庫插入錯誤: {e}") 
         return False
     finally:
         conn.close()
@@ -60,7 +69,6 @@ def get_user_by_credentials(username, password):
         conn.close()
         return user
     except sqlite3.Error as e:
-        print(f"登入查詢錯誤: {e}")
         conn.close()
         return None
 
@@ -82,7 +90,34 @@ def register_new_user(username, password, email):
         conn.commit()
         return True
     except sqlite3.Error as e:
-        print(f"使用者註冊錯誤: {e}")
+        return False
+    finally:
+        conn.close()
+    
+def update_article(article_id, title, content, category):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    query = 'UPDATE data SET title = ?, content = ?, category = ? WHERE id = ?'
+    try:
+        cursor.execute(query, (title, content, category, article_id))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"資料庫錯誤 (update_article): {e}")
+        return False
+    finally:
+        conn.close()
+
+def delete_article(article_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    query = 'DELETE FROM data WHERE id = ?'
+    try:
+        cursor.execute(query, (article_id,))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"資料庫錯誤 (delete_article): {e}")
         return False
     finally:
         conn.close()
@@ -99,17 +134,31 @@ def index():
     current_username = session.get('username')
     return render_template('index.html',articles=articles, username=current_username)
 
-@app.route('/category/<string:category_name>')
-def category_posts(category_name):
+@app.route('/category')
+def category_posts():
+    category_name = request.args.get('category_name')
     articles = get_articles_by_category(category_name)
     current_username = session.get('username')
-    return render_template('index.html', category=category_name, articles=articles, username=current_username)
+    return render_template('category.html',articles=articles, username=current_username)
 
-@app.route('/author/<string:author_name>')
-def author_posts(author_name):
+@app.route('/author')
+def author_posts():
+    author_name = request.args.get('author_name')
     articles = get_articles_by_author(author_name)
     current_username = session.get('username')
-    return render_template('index.html', author=author_name, articles=articles, username=current_username)
+    return render_template('author.html',articles=articles, username=current_username)
+
+@app.route('/single')
+def single_posts():
+    article_id = request.args.get('article_id')
+    article = get_article_by_id(article_id)
+    current_username = session.get('username')
+    return render_template('single.html',article=article, username=current_username)
+
+
+# ====================================================================
+# api
+# ====================================================================
 
 @app.route('/posts', methods=['POST'])
 def create_post():
@@ -129,7 +178,6 @@ def create_post():
             return jsonify({"success": False, "message": "資料庫儲存失敗，請檢查後端日誌"}), 500
     return jsonify({"success": False, "message": "請求必須是 JSON 格式"}), 415
 
-
 @app.route('/login', methods=['POST'])
 def login_user():
     if not request.is_json:
@@ -141,12 +189,11 @@ def login_user():
         return jsonify({"success": False, "message": "請填寫使用者名稱和密碼"}), 400
     user = get_user_by_credentials(username, password)
     if user:
+        session.permanent = True
         session['username'] = username 
-        print(f"Session 設置成功: {session.get('username')}")
         return jsonify({"success": True, "message": "登入成功", "username": username}), 200
     else:
         return jsonify({"success": False, "message": "使用者名稱或密碼錯誤"}), 401
-
 
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -173,6 +220,35 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+@app.route('/edit/<int:article_id>', methods=['POST'])
+def edit_post(article_id):
+    article = get_article_by_id(article_id)
+    current_username = session.get('username')
+
+    if not article or not current_username or current_username != article[3]:
+        return redirect(url_for('index'))
+
+    new_title = request.form.get('title')
+    new_content = request.form.get('content')
+    new_category = request.form.get('category')
+    
+    if update_article(article_id, new_title, new_content, new_category):
+        return redirect(url_for('index'))
+    else:
+        return "更新失敗，請檢查資料庫連線。", 500
+
+@app.route('/delete/<int:article_id>', methods=['GET', 'POST'])
+def delete_post(article_id):
+    article = get_article_by_id(article_id)
+    current_username = session.get('username')
+    if not article:
+        return redirect(url_for('index'))
+    if not current_username or current_username != article[3]:
+        return redirect(url_for('index'))
+    if delete_article(article_id):
+        return redirect(url_for('index'))
+    else:
+        return "刪除失敗，請檢查資料庫連線。", 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

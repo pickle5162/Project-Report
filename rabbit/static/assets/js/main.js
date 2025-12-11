@@ -169,3 +169,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+//====================================================================
+// edit
+//====================================================================
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    var editModal = document.getElementById('editPostModal');
+    var openEditButton = document.getElementById('editPostButton');
+    var closeEditButton = document.getElementById('closeEditModalBtn');
+
+    if (openEditButton) {
+        openEditButton.onclick = function() {
+            editModal.style.display = "block";
+        }
+    }
+
+    if (closeEditButton) {
+        closeEditButton.onclick = function() {
+            editModal.style.display = "none";
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target == editModal) {
+            editModal.style.display = "none";
+        }
+    }
+});

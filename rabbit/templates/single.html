@@ -6,38 +6,75 @@
 -->
 <html>
 	<head>
-		<title>Single - Future Imperfect by HTML5 UP</title>
+		<title>Single article</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 	</head>
 	<body class="single is-preload">
+		<div id="editPostModal" class="modal" style="display: none;">
+    		<div>
+        		<span id="closeEditModalBtn" class="close-btn">&times;</span>
+        		<h2>編輯文章</h2>
+        
+        		{% if article %}
+        		<form method="POST" action="{{ url_for('edit_post', article_id=article[0]) }}">
+            
+            		<label for="editPostTitle">標題:</label>
+            		<input type="text" id="editPostTitle" name="title" value="{{ article[1] }}" required><br><br>
+
+            		<label for="editPostContent">內容:</label>
+            		<textarea id="editPostContent" name="content" rows="10" required>{{ article[2] }}</textarea><br><br>
+
+            		<label for="editPostCategory">種類:</label>
+            		<select id="editPostCategory" name="category" required>
+                		<option value="Food" {% if article[5] == 'Food' %}selected{% endif %}>Food</option>
+                		<option value="Sports" {% if article[5] == 'Sports' %}selected{% endif %}>Sports</option>
+                		<option value="Technology" {% if article[5] == 'Technology' %}selected{% endif %}>Technology</option>
+                		<option value="Other" {% if article[5] == 'Other' %}selected{% endif %}>Other</option>
+            		</select><br><br>
+
+            		<button type="submit">確認修改</button>
+        		</form>
+        		{% else %}
+        		<p>無法載入編輯表單，文章不存在。</p>
+        		{% endif %}
+
+    		</div>
+		</div>
+
 		<div id="wrapper">
-        	{% if articles %}
-   			{% for article in articles %}
-        	<article class="post">
-            	<header>
-                	<div class="title">
-                    	<h2 class="article-content">{{ article[0] }}</h2>
-                	</div>
-                	<div class="meta">
-                    	<time class="published" datetime="{{ article[3] }}">{{ article[3] }}</time>
-                    	<a href="{{ url_for('author_posts', author_name=article[2]) }}" class="author"><span class="name">{{ article[2] }}</span></a>
-                	</div>
-            	</header>
-            		<p class="article-content">{{ article[1] | safe }}</p>
-            	<footer>
-                	<ul class="stats">
-                    	<li>{{ article[4] }}</li>
-                    	<li><a href="#" class="icon solid fa-comment">128</a></li>
-                	</ul>
-            	</footer>
-        	</article>
-    		{% endfor %}
-			{% else %}
-    		<p>此分類下目前沒有文章。</p>
-			{% endif %}
-    	</div>
+				<div id="main">
+        			{% if article %}  <article class="post">
+            			<header>
+                			<div class="title">
+                    			<h2 class="article-content">{{ article[1] }}</h2>
+                			</div>
+                			<div class="meta">
+                    			<time class="published" datetime="{{ article[4] }}">{{ article[4] }}</time>
+                    			<a href="{{ url_for('author_posts', author_name=article[3]) }}" class="author"><span class="name">{{ article[3] }}</span></a>
+                			</div>
+            			</header>
+            			<p class="article-content">{{ article[2] | safe }}</p>
+            			<footer>
+                			<ul class="stats">
+                    			<li>{{ article[5] }}</li>
+                    			<li><a href="#" class="icon solid fa-comment">128</a></li>
+								{% if username and username == article[3] %}
+        						<li>
+           							 <a href="#" id="editPostButton" class="icon solid fa-edit">修改</a>
+        						</li>
+        						<li>
+            						<a href="{{ url_for('delete_post', article_id=article[0]) }}" class="icon solid fa-trash">刪除</a>
+        						</li>
+    							{% endif %}
+                			</ul>
+            			</footer>
+        			</article>
+        			{% else %}
+        			<p>找不到該文章或文章 ID 錯誤。</p>
+        			{% endif %}
+    			</div>
 
 
 				<!-- Footer -->
@@ -53,6 +90,6 @@
 
 
 		<!-- Scripts -->
-			<script src="assets/js/main.js"></script>
+			<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 	</body>
 </html>

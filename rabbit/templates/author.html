@@ -75,18 +75,18 @@
         			<article class="post">
             			<header>
                 			<div class="title">
-                    			<a href="{{ url_for('single_posts', article_id=article[0]) }}"><h2 class="article-content">{{ article[1] }}</h2></a>
+                    			<h2 class="article-content">{{ article[0] }}</h2>
                 			</div>
                 			<div class="meta">
-                    			<time class="published" datetime="{{ article[4] }}">{{ article[4] }}</time>
-                    			<a href="{{ url_for('author_posts', author_name=article[3]) }}" class="author"><span class="name">{{ article[3] }}</span></a>
+                    			<time class="published" datetime="{{ article[3] }}">{{ article[3] }}</time>
+                    			<a href="{{ url_for('author_posts', author_name=article[2]) }}" class="author"><span class="name">{{ article[2] }}</span></a>
                 			</div>
             			</header>
-            			<p class="article-content">{{ article[2] | safe }}</p>
+            				<p class="article-content">{{ article[1] | safe }}</p>
             			<footer>
 							<ul class="stats">
-								<li>{{ article[5] }}</li>
-								<li><a href="{{ url_for('single_posts', article_id=article[0]) }}" class="icon solid fa-comment">128</a></li>
+								<li>{{ article[4] }}</li>
+								<li><a href="#" class="icon solid fa-comment">128</a></li>
 							</ul>
             			</footer>
         			</article>
@@ -108,6 +108,7 @@
 								<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
 								</a>
 								{% endif %}
+								
 								<header>
 									{% if username %}
     								<a href="{{ url_for('logout') }}" id="logoutBtn">
