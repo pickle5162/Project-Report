@@ -20,7 +20,7 @@ def get_all_articles():
 def get_articles_by_category(category_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'SELECT id, title, content, author, time, category FROM data ORDER BY time DESC'
+    query = 'SELECT id, title, content, author, time, category FROM data WHERE category = ? ORDER BY time DESC'
     cursor.execute(query, (category_name,))
     articles = cursor.fetchall()
     conn.close()
@@ -29,7 +29,7 @@ def get_articles_by_category(category_name):
 def get_articles_by_author(author_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'SELECT id, title, content, author, time, category FROM data ORDER BY time DESC'
+    query = 'SELECT id, title, content, author, time, category FROM data WHERE category = ? ORDER BY time DESC'
     cursor.execute(query, (author_name,))
     articles = cursor.fetchall()
     conn.close()
