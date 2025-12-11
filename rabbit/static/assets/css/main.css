@@ -2527,7 +2527,7 @@ input, select, textarea {
 
 
 	.article-content {
-    	word-break: break-all !important;
+    	word-break: break-all ;
 	}
 	#postModal, #authModal {
     	position: fixed;
@@ -3613,3 +3613,9 @@ input, select, textarea {
 			}
 
 		}
+	
+	#welcome-message {
+    font-size: 2em;
+    font-weight: bold; 
+	color: #000000;
+}

@@ -3,7 +3,7 @@ import os
 import sqlite3
 from datetime import datetime
 app = Flask(__name__)
-app.secret_key = 'Your_Highly_Confidential_And_Complex_Secret_Key_For_Session_Security'
+app.secret_key = 'This_Is_My_Final_Project_Its_Called_Rabbit'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "data.db")
 
@@ -102,12 +102,14 @@ def index():
 @app.route('/category/<string:category_name>')
 def category_posts(category_name):
     articles = get_articles_by_category(category_name)
-    return render_template('index.html', category=category_name, articles=articles)
+    current_username = session.get('username')
+    return render_template('index.html', category=category_name, articles=articles, username=current_username)
 
 @app.route('/author/<string:author_name>')
 def author_posts(author_name):
     articles = get_articles_by_author(author_name)
-    return render_template('index.html', author=author_name, articles=articles)
+    current_username = session.get('username')
+    return render_template('index.html', author=author_name, articles=articles, username=current_username)
 
 @app.route('/posts', methods=['POST'])
 def create_post():
@@ -173,4 +175,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
