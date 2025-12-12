@@ -99,14 +99,13 @@
 					<section id="sidebar">
 						<!-- Intro -->
 							<section id="intro">
+								<a href="{{ url_for('index') }}" class="logo"> 
+        							<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
+							    </a>
 								{% if username %}
 								<div>
 									<a href="/"><p id="welcome-message" class="big">你好，{{ username }}</p></a>
 								</div>
-								{% else %}
-								<a href="" class="logo">
-								<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
-								</a>
 								{% endif %}
 								<header>
 									{% if username %}
