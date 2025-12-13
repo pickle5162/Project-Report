@@ -99,9 +99,7 @@
 					<section id="sidebar">
 						<!-- Intro -->
 							<section id="intro">
-								<a href="{{ url_for('index') }}" class="logo"> 
-        							<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
-							    </a>
+								
 								<header>
             						{% if username %}
             						<a href="/">
@@ -111,6 +109,9 @@
                 						<h2>登出</h2>
             						</a>
             						{% else %}
+									<a href="{{ url_for('index') }}" class="logo"> 
+        								<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
+							    	</a>
             						<a href="#">
                 						<h2 id="loginRegisterBtn">登入/註冊</h2>
            	 						</a>

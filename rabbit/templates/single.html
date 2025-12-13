@@ -79,18 +79,23 @@
 
 				<!-- comment -->
 				<div class="comment-section">
-					<form method="POST" action="{{ url_for('post_comment', article_id=article[0]) }}"></form>
     				{% if username %}
-					<h4>以 {{ username }} 身份留言</h4>
-    				{% else %}
-					<h4>以 訪客 身份留言</h4>
-    				{% endif %}
-					<textarea name="comment_content" rows="4" placeholder="輸入您的評論..." required></textarea>
-						<div class="form-actions"> 
-							<button type="submit" class="button special small">送出評論</button>
-						</div>
+					<form method="POST" action="{{ url_for('post_comment', article_id=article[0]) }}">
+						<h4>以 {{ username }} 身份留言</h4>
+						<textarea name="comment_content" rows="4" placeholder="輸入您的評論..." required></textarea>
+							<div class="form-actions"> 
+								<button type="submit" class="button special small">送出評論</button>
+							</div>
 					</form>
-
+    				{% else %}
+					<form method="POST" action="{{ url_for('post_comment', article_id=article[0]) }}">
+						<h4>以 訪客 身份留言</h4>
+						<textarea name="comment_content" rows="4" placeholder="輸入您的評論..." required></textarea>
+							<div class="form-actions"> 
+								<button type="submit" class="button special small">送出評論</button>
+							</div>
+					</form>
+    				{% endif %}
     				{% if comments %}
         			{% for comment in comments %}
         			<article class="comment-box">
