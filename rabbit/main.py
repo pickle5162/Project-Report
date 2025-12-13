@@ -71,22 +71,49 @@ def get_user_by_credentials(username, password):
     except sqlite3.Error as e:
         conn.close()
         return None
+    
+def get_comments_by_article_id(article_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    query = """SELECT content_id, author, content, time FROM comment WHERE data_id = ? ORDER BY time DESC"""
+    cursor.execute(query, (article_id,))
+    comments = cursor.fetchall()
+    conn.close()
+    return comments
 
-def is_email_exist(email):
+def get_comment_count_by_article_id(article_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    query = "SELECT COUNT(content_id) FROM comment WHERE data_id = ?" 
+    cursor.execute(query, (article_id,))
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count
+
+def add_comment(article_id, author, content):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query = """INSERT INTO comment (data_id, author, content, time)  VALUES (?, ?, ?, ?)"""
+    cursor.execute(query, (article_id, author, content, current_time))
+    conn.commit()
+    return True
+
+def is_gmail_exist(gmail):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     query = 'SELECT 1 FROM user WHERE gmail = ?'
-    cursor.execute(query, (email,))
+    cursor.execute(query, (gmail,))
     exists = cursor.fetchone()
     conn.close()
     return exists is not None
 
-def register_new_user(username, password, email):
+def register_new_user(username, password, gmail):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     try:
         query = 'INSERT INTO user (username, password, gmail) VALUES (?, ?, ?)'
-        cursor.execute(query, (username, password, email))
+        cursor.execute(query, (username, password, gmail))
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -132,28 +159,50 @@ def delete_article(article_id):
 def index():
     articles = get_all_articles()
     current_username = session.get('username')
-    return render_template('index.html',articles=articles, username=current_username)
+    articles_with_count = []
+    for article in articles:
+        article_id = article[0]
+        comment_count = get_comment_count_by_article_id(article_id)
+        article_list = list(article)
+        article_list.append(comment_count)
+        articles_with_count.append(tuple(article_list))
+    return render_template('index.html',articles=articles_with_count, username=current_username)
 
 @app.route('/category')
 def category_posts():
     category_name = request.args.get('category_name')
     articles = get_articles_by_category(category_name)
     current_username = session.get('username')
-    return render_template('category.html',articles=articles, username=current_username)
+    articles_with_count = []
+    for article in articles:
+        article_id = article[0]
+        comment_count = get_comment_count_by_article_id(article_id)
+        article_list = list(article)
+        article_list.append(comment_count)
+        articles_with_count.append(tuple(article_list))
+    return render_template('category.html',articles=articles_with_count, username=current_username)
 
 @app.route('/author')
 def author_posts():
     author_name = request.args.get('author_name')
     articles = get_articles_by_author(author_name)
     current_username = session.get('username')
-    return render_template('author.html',articles=articles, username=current_username)
+    articles_with_count = []
+    for article in articles:
+        article_id = article[0]
+        comment_count = get_comment_count_by_article_id(article_id)
+        article_list = list(article)
+        article_list.append(comment_count)
+        articles_with_count.append(tuple(article_list))
+    return render_template('author.html',articles=articles_with_count, username=current_username)
 
 @app.route('/single')
 def single_posts():
     article_id = request.args.get('article_id')
     article = get_article_by_id(article_id)
+    comments = get_comments_by_article_id(article_id)
     current_username = session.get('username')
-    return render_template('single.html',article=article, username=current_username)
+    return render_template('single.html', article=article,username=current_username,comments=comments)
 
 
 # ====================================================================
@@ -202,14 +251,14 @@ def register_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    email = data.get('email')
-    if not all([username, password, email]):
+    gmail = data.get('gmail')
+    if not all([username, password, gmail]):
         return jsonify({"success": False, "message": "所有欄位皆為必填"}), 400
-    if not email.endswith("@gmail.com"):
-        return jsonify({"success": False, "message": "Email 格式不符，必須是 @gmail.com"}), 400
-    if is_email_exist(email):
-        return jsonify({"success": False, "message": "Email 已存在"}), 409 
-    if register_new_user(username, password, email):
+    if not gmail.endswith("@gmail.com"):
+        return jsonify({"success": False, "message": "Gmail 格式不符，必須是 @gmail.com"}), 400
+    if is_gmail_exist(gmail):
+        return jsonify({"success": False, "message": "Gmail 已存在"}), 409 
+    if register_new_user(username, password, gmail):
         session['username'] = username 
         return jsonify({"success": True, "message": "註冊成功並已自動登入"}), 201
     else:
@@ -249,6 +298,22 @@ def delete_post(article_id):
         return redirect(url_for('index'))
     else:
         return "刪除失敗，請檢查資料庫連線。", 500
+    
+@app.route('/comment/<int:article_id>', methods=['POST'])
+def post_comment(article_id):
+    current_username = session.get('username')
+    comment_content = request.form.get('comment_content')
+    if current_username:
+        author_to_save = current_username
+    else:
+        author_to_save = '訪客'
+
+    if comment_content and comment_content.strip():
+        if add_comment(article_id, author_to_save, comment_content):
+            return redirect(url_for('single_posts', article_id=article_id))
+        else:
+            return "留言失敗，資料庫錯誤。", 500
+    return redirect(url_for('single_posts', article_id=article_id))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -14,13 +14,13 @@
         		<h2>撰寫新文章</h2>
         		<form id="newPostForm">
             		<label for="postTitle">標題:</label>
-            		<input type="text" id="postTitle" name="title" required><br><br>
+            		<input type="text" id="postTitle" name="title"><br><br>
 
             		<label for="postContent">內容:</label>
-            		<textarea id="postContent" name="content" rows="10" required></textarea><br><br>
+            		<textarea id="postContent" name="content" rows="10"></textarea><br><br>
 
             		<label for="postCategory">種類:</label>
-           	 		<select id="postCategory" name="category" required>
+           	 		<select id="postCategory" name="category">
 						<option value="Food">Food</option>
                 		<option value="Sports">Sports</option>
                 		<option value="Technology">Technology</option>
@@ -40,10 +40,10 @@
 					<form id="loginForm" class="auth-form">
 					<h3>登入</h3>
 						<label for="loginUsername">使用者名稱:</label>
-						<input type="text" id="loginUsername" name="username" required><br><br>
+						<input type="text" id="loginUsername" name="username"><br><br>
 
 						<label for="loginPassword">密碼:</label>
-						<input type="password" id="loginPassword" name="password" required><br><br>
+						<input type="password" id="loginPassword" name="password"><br><br>
 
 						<button type="submit">登入</button>
 						<p>還沒有帳號？ <a href="#" id="showRegister">點此註冊</a></p>
@@ -51,13 +51,13 @@
 					<form id="registerForm" class="auth-form">
 					<h3>註冊</h3>
 						<label for="regUsername">使用者名稱:</label>
-						<input type="text" id="regUsername" name="username" required><br><br>
+						<input type="text" id="regUsername" name="username"><br><br>
 			
-						<label for="regEmail">Gmail 電子郵件:</label>
-						<input type="email" id="regEmail" name="email" required><br><br>
+						<label for="regGmail">Gmail 電子郵件:</label>
+						<input type="gmail" id="regGmail" name="gmail"><br><br>
 
 						<label for="regPassword">密碼:</label>
-						<input type="password" id="regPassword" name="password" required><br><br>
+						<input type="password" id="regPassword" name="password"><br><br>
 
 						<button type="submit">註冊</button>
 						<p>已有帳號？ <a href="#" id="showLogin">返回登入</a></p>
@@ -86,7 +86,7 @@
             			<footer>
 							<ul class="stats">
 								<li>{{ article[5] }}</li>
-								<li><a href="{{ url_for('single_posts', article_id=article[0]) }}" class="icon solid fa-comment">128</a></li>
+								<li><a href="{{ url_for('single_posts', article_id=article[0]) }}" class="icon solid fa-comment">{{ article[6] }}</a></li>
 							</ul>
             			</footer>
         			</article>
@@ -102,21 +102,19 @@
 								<a href="{{ url_for('index') }}" class="logo"> 
         							<img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" />
 							    </a>
-								{% if username %}
-								<div>
-									<a href="/"><p id="welcome-message" class="big">你好，{{ username }}</p></a>
-								</div>
-								{% endif %}
 								<header>
-									{% if username %}
-    								<a href="{{ url_for('logout') }}" id="logoutBtn">
-        								<h2>登出</h2>
-    								</a>
-									{% else %}
-    								<a href="#">
-        								<h2 id="loginRegisterBtn">登入/註冊</h2>
-    								</a>
-									{% endif %}
+            						{% if username %}
+            						<a href="/">
+										<h2 id="welcome-message">你好，{{ username }}</h2>
+									</a>
+									<a href="{{ url_for('logout') }}" id="logoutBtn">
+                						<h2>登出</h2>
+            						</a>
+            						{% else %}
+            						<a href="#">
+                						<h2 id="loginRegisterBtn">登入/註冊</h2>
+           	 						</a>
+            						{% endif %}
 									<button id="addPostButton">新增文章</button>
 								</header>
 							</section>

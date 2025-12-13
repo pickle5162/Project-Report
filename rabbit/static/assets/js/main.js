@@ -137,11 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             const registerData = {
                 username: document.getElementById('regUsername').value,
-                email: document.getElementById('regEmail').value,
+                gmail: document.getElementById('regGmail').value,
                 password: document.getElementById('regPassword').value,
             };
-            if (!registerData.email.endsWith("@gmail.com")) {
-                 alert("Email 格式不符，必須是 @gmail.com 結尾。");
+            if (!registerData.username || !registerData.password || !registerData.gmail) {
+            alert("所有欄位皆為必填。");
+            return;
+        }
+            if (!registerData.gmail.endsWith("@gmail.com")) {
+                 alert("Gmail 格式不符，必須是 @gmail.com 結尾。");
                  return;
             }
             try {

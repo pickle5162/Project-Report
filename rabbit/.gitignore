@@ -12,7 +12,3 @@ __pycache__/
 # 忽略虛擬環境資料夾 (如果使用 venv 或 virtualenv)
 venv/
 .venv/
-
-# 忽略資料庫檔案 (你提到 SQLite)
-# 假設你的資料庫檔案名是 users.db
-users.db

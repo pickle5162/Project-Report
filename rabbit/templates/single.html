@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-	Future Imperfect by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
 		<title>Single article</title>
@@ -12,6 +7,7 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
 	</head>
 	<body class="single is-preload">
+		<!-- edit -->
 		<div id="editPostModal" class="modal" style="display: none;">
     		<div>
         		<span id="closeEditModalBtn" class="close-btn">&times;</span>
@@ -44,8 +40,13 @@
 		</div>
 
 		<div id="wrapper">
+			<a href="{{ url_for('index') }}" class="button primary icon solid fa-home" style="margin-bottom: 2em; margin-left: 2em; display: inline-block;">
+        	回首頁
+    		</a>
+				<!-- post -->
 				<div id="main">
-        			{% if article %}  <article class="post">
+        			{% if article %}  
+					<article class="post">
             			<header>
                 			<div class="title">
                     			<h2 class="article-content">{{ article[1] }}</h2>
@@ -59,7 +60,7 @@
             			<footer>
                 			<ul class="stats">
                     			<li>{{ article[5] }}</li>
-                    			<li><a href="#" class="icon solid fa-comment">128</a></li>
+                    			<li><a href="#" class="icon solid fa-comment">{{ comments | length if comments else 0 }}</a></li>
 								{% if username and username == article[3] %}
         						<li>
            							 <a href="#" id="editPostButton" class="icon solid fa-edit">修改</a>
@@ -76,18 +77,38 @@
         			{% endif %}
     			</div>
 
+				<!-- comment -->
+				<div class="comment-section">
+					<form method="POST" action="{{ url_for('post_comment', article_id=article[0]) }}"></form>
+    				{% if username %}
+					<h4>以 {{ username }} 身份留言</h4>
+    				{% else %}
+					<h4>以 訪客 身份留言</h4>
+    				{% endif %}
+					<textarea name="comment_content" rows="4" placeholder="輸入您的評論..." required></textarea>
+						<div class="form-actions"> 
+							<button type="submit" class="button special small">送出評論</button>
+						</div>
+					</form>
 
-				<!-- Footer -->
-					<section id="footer">
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon solid fa-rss"><span class="label">RSS</span></a></li>
-							<li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-					</section>
-
+    				{% if comments %}
+        			{% for comment in comments %}
+        			<article class="comment-box">
+            			<header>
+                			<div class="meta">
+                    		<span class="author-name">
+                        		<a href="{{ url_for('author_posts', author_name=comment[1]) }}">{{ comment[1] }}</a>
+                    		</span>
+                    			<time class="published">{{ comment[3] }}</time>
+                			</div>
+            			</header>
+            			<p>{{ comment[2] }}</p>
+        			</article>
+        			<hr> {% endfor %}
+    				{% else %}
+        			<p>目前沒有評論。快來搶第一個留言吧！</p>
+    				{% endif %}
+				</div>
 
 		<!-- Scripts -->
 			<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
