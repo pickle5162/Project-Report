@@ -121,12 +121,13 @@ def register_new_user(username, password, gmail):
     finally:
         conn.close()
     
-def update_article(article_id, title, content, category):
+def update_article(article_id, title, content, category, updated_at):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    query = 'UPDATE data SET title = ?, content = ?, category = ? WHERE id = ?'
+    updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query = 'UPDATE data SET title = ?, content = ?, category = ?, time = ? WHERE id = ?'
     try:
-        cursor.execute(query, (title, content, category, article_id))
+        cursor.execute(query, (title, content, category, updated_at, article_id))
         conn.commit()
         return True
     except sqlite3.Error as e:
@@ -220,7 +221,7 @@ def create_post():
         content = data.get('content')
         category = data.get('category')
         if not all([title, content, category]):
-            return jsonify({"success": False, "message": "文章標題、內容和種類不能為空"}), 400
+            return jsonify({"success": False, "message": "文章標題、內容不能為空"}), 400
         if insert_article(title, content, current_author, category):
             return jsonify({"success": True, "message": "文章發佈成功", "title": title}), 201
         else:
@@ -280,8 +281,9 @@ def edit_post(article_id):
     new_title = request.form.get('title')
     new_content = request.form.get('content')
     new_category = request.form.get('category')
+    updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
-    if update_article(article_id, new_title, new_content, new_category):
+    if update_article(article_id, new_title, new_content, new_category, updated_at):
         return redirect(url_for('index'))
     else:
         return "更新失敗，請檢查資料庫連線。", 500
